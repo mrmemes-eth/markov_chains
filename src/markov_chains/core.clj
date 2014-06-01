@@ -27,12 +27,12 @@
 (defn get-next-word [word word-map]
   (rand-nth (flatten (map (fn [[k v]] (repeat v k)) (get word-map word)))))
 
-(defn build-phrase [word word-map iterations]
-  (cons word (if (< iterations 12)
+(defn build-phrase [word word-map]
+  (cons word (if (not (re-matches #".*[?!.]" word))
                (let [next-word (get-next-word word word-map)]
-                 (build-phrase next-word word-map (inc iterations))))))
+                 (build-phrase next-word word-map)))))
 
 (defn -main []
   (let [word-map (build-word-map (word-seq metamorphosis-text))
         start-word (get-start-word word-map)]
-    (apply println (build-phrase start-word word-map 0))))
+    (apply println (build-phrase start-word word-map))))
