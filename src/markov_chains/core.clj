@@ -1,13 +1,5 @@
 (ns markov-chains.core)
 
-; {
-;  "if" { "the" 5 "you" 4}
-;  "promise" { "for" 4 "to" 3}
-; }
-
-(def metamorphosis-text
-  (slurp "resources/metamorphosis-text-only.txt"))
-
 (defn word-seq [string]
   (re-seq #"\S+" string))
 
@@ -32,7 +24,7 @@
                (let [next-word (get-next-word word word-map)]
                  (build-phrase next-word word-map)))))
 
-(defn -main []
-  (let [word-map (build-word-map (word-seq metamorphosis-text))
+(defn -main [doc]
+  (let [word-map (build-word-map (word-seq (slurp doc)))
         start-word (get-start-word word-map)]
     (apply println (build-phrase start-word word-map))))
