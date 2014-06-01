@@ -1,14 +1,16 @@
 # markov-chains
 
-A Clojure library designed to ... well, that part is up to you.
+Super simple markov chains on a textual corpus.
 
 ## Usage
 
-FIXME
+`lein run path-to-file.txt`
+
+e.g.:
+
+`lein run resources/vatsyayana-kama-sutra-text-only.txt`
 
 ## License
-
-Copyright © 2014 FIXME
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
