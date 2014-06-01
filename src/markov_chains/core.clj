@@ -8,32 +8,31 @@
 (def metamorphosis-text
   (slurp "resources/metamorphosis-text-only.txt"))
 
-(defn words [string]
+(defn word-seq [string]
   (re-seq #"\S+" string))
 
 (defn successive-words [word-seq]
   (group-by first (partition 2 1 word-seq)))
 
-(defn process [word-seq]
+(defn build-word-map [word-seq]
   (into {} (map (fn [[k v]] [k (frequencies (map second v))])
                 (successive-words word-seq))))
 
 (defn first-words [word-map]
   (filter #(re-matches #"^[A-Z].*$" %) (keys word-map)))
 
-(defn seed [word-map]
+(defn get-start-word [word-map]
   (rand-nth (first-words word-map)))
 
-(defn next-word [word word-map]
+(defn get-next-word [word word-map]
   (rand-nth (flatten (map (fn [[k v]] (repeat v k)) (get word-map word)))))
 
-(defn recur-words [word word-map iterations]
+(defn build-phrase [word word-map iterations]
   (cons word (if (< iterations 12)
-               (let [successive (next-word word word-map)
-                     next-iter (inc iterations)]
-                 (recur-words successive word-map next-iter)))))
+               (let [next-word (get-next-word word word-map)]
+                 (build-phrase next-word word-map (inc iterations))))))
 
 (defn -main []
-  (let [word-map (process (words metamorphosis-text))
-        stem (seed word-map)]
-    (apply println (recur-words stem word-map 0))))
+  (let [word-map (build-word-map (word-seq metamorphosis-text))
+        start-word (get-start-word word-map)]
+    (apply println (build-phrase start-word word-map 0))))
